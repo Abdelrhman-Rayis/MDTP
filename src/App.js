@@ -804,6 +804,7 @@ const Side = ({ role, tab, sTab, onOut, isMobile, isOpen, onClose }) => {
 // ─── LOGIN ───
 const Login = ({ onIn, onRegister }) => {
   const [s, ss] = useState(null);
+  const [err, setErr] = useState(false);
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(135deg, ${C.primary} 0%, #075985 50%, ${C.accent} 100%)`, padding: 20 }}>
       <div style={{ maxWidth: 460, width: "100%", textAlign: "center", direction: "rtl" }}>
@@ -826,7 +827,7 @@ const Login = ({ onIn, onRegister }) => {
               ["trainer",   "Consultant", I.award,  "Dr. Sara",      C.success],
               ["trainee",   "Resident",  I.users,  "Ahmed M.",      C.warning],
             ].map(([r,l,ic,n,col]) => (
-              <button key={r} onClick={() => ss(r)}
+              <button key={r} onClick={() => { ss(r); setErr(false); }}
                 style={{ padding: "11px 10px", borderRadius: 12, border: s === r ? `2px solid ${col}` : `1px solid ${C.border}`, backgroundColor: s === r ? `${col}15` : "#fff", cursor: "pointer", fontFamily: "inherit", display: "flex", flexDirection: "column", alignItems: "center", gap: 5, transition: "all 0.15s" }}>
                 <Ic d={ic} s={20} c={s === r ? col : C.muted}/>
                 <span style={{ fontSize: 12, fontWeight: 700, color: s === r ? col : C.muted }}>{l}</span>
@@ -834,7 +835,12 @@ const Login = ({ onIn, onRegister }) => {
               </button>
             ))}
           </div>
-          <Btn v="accent" sz="lg" onClick={() => s && onIn(s)} sx={{ width: "100%", justifyContent: "center" }}>Sign In</Btn>
+          {err && (
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", backgroundColor: C.dangerSoft, border: `1px solid ${C.danger}`, borderRadius: 10, marginBottom: 12, color: C.danger, fontSize: 13, fontWeight: 600, textAlign: "center", justifyContent: "center" }}>
+              ⚠️ Please choose your role: Moderator, Admin, Consultant, or Resident.
+            </div>
+          )}
+          <Btn v="accent" sz="lg" onClick={() => { if (!s) { setErr(true); } else { onIn(s); } }} sx={{ width: "100%", justifyContent: "center" }}>Sign In</Btn>
           <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${C.border}`, textAlign: "center" }}>
             <p style={{ fontSize: 13, color: C.muted, margin: "0 0 8px" }}>Don't have an account?</p>
             <Btn v="outline" onClick={onRegister} sx={{ width: "100%", justifyContent: "center" }}>Register with Invitation Code</Btn>
