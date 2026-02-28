@@ -1,4 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+// ─── MOBILE HOOK ───
+const useMobile = () => {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const fn = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
+  }, []);
+  return isMobile;
+};
 
 // ─── COLOUR PALETTE ───
 const C = {
@@ -158,15 +169,15 @@ const Crd = ({ children, style, onClick, hv }) => {
 };
 
 const Stat = ({ icon, label, value, sub, color = C.accent }) => (
-  <Crd hv>
-    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-      <div style={{ width: 52, height: 52, borderRadius: 14, backgroundColor: `${color}18`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-        <Ic d={icon} s={24} c={color}/>
+  <Crd hv style={{ padding: "16px 18px" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+      <div style={{ width: 46, height: 46, borderRadius: 12, backgroundColor: `${color}18`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <Ic d={icon} s={22} c={color}/>
       </div>
-      <div>
-        <div style={{ fontSize: 13, color: C.muted, marginBottom: 2 }}>{label}</div>
-        <div style={{ fontSize: 28, fontWeight: 800, color: C.text, lineHeight: 1.1 }}>{value}</div>
-        {sub && <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{sub}</div>}
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontSize: 12, color: C.muted, marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{label}</div>
+        <div style={{ fontSize: 24, fontWeight: 800, color: C.text, lineHeight: 1.1 }}>{value}</div>
+        {sub && <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{sub}</div>}
       </div>
     </div>
   </Crd>
@@ -233,17 +244,20 @@ const YTL = ({ y }) => (
   </div>
 );
 
-const Modal = ({ title, onClose, children, w = 640 }) => (
-  <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}>
-    <div style={{ backgroundColor: C.card, borderRadius: 20, padding: 32, maxWidth: w, width: "100%", maxHeight: "90vh", overflowY: "auto", direction: "rtl" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: C.primary, margin: 0 }}>{title}</h2>
-        <button onClick={onClose} style={{ background: "none", border: "none", fontSize: 24, cursor: "pointer", color: C.muted, fontFamily: "inherit" }}>✕</button>
+const Modal = ({ title, onClose, children, w = 640 }) => {
+  const isMobile = useMobile();
+  return (
+    <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: isMobile ? "flex-end" : "center", justifyContent: "center", zIndex: 1000, padding: isMobile ? 0 : 20 }}>
+      <div style={{ backgroundColor: C.card, borderRadius: isMobile ? "20px 20px 0 0" : 20, padding: isMobile ? "24px 20px" : 32, maxWidth: w, width: "100%", maxHeight: isMobile ? "92vh" : "90vh", overflowY: "auto", direction: "rtl" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h2 style={{ fontSize: isMobile ? 18 : 22, fontWeight: 800, color: C.primary, margin: 0 }}>{title}</h2>
+          <button onClick={onClose} style={{ background: "none", border: "none", fontSize: 24, cursor: "pointer", color: C.muted, fontFamily: "inherit" }}>✕</button>
+        </div>
+        {children}
       </div>
-      {children}
     </div>
-  </div>
-);
+  );
+};
 
 const FL = ({ label, children }) => (
   <div>
@@ -441,6 +455,7 @@ const TplUpload = ({ onClose }) => {
 
 // ─── TRAINEE PROFILE ───
 const Profile = ({ t, onClose }) => {
+  const isMobile = useMobile();
   const ta = ASSESS.filter(a => a.tId === t.id);
   const td = DOCS.filter(d => d.tId === t.id);
   const [tab, sTab] = useState("a");
@@ -451,8 +466,8 @@ const Profile = ({ t, onClose }) => {
   };
 
   return (
-    <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}>
-      <div style={{ backgroundColor: C.bg, borderRadius: 20, maxWidth: 860, width: "100%", maxHeight: "90vh", overflowY: "auto", direction: "rtl" }}>
+    <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: isMobile ? "flex-end" : "center", justifyContent: "center", zIndex: 1000, padding: isMobile ? 0 : 20 }}>
+      <div style={{ backgroundColor: C.bg, borderRadius: isMobile ? "20px 20px 0 0" : 20, maxWidth: 860, width: "100%", maxHeight: isMobile ? "92vh" : "90vh", overflowY: "auto", direction: "rtl" }}>
         <div style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primaryLight})`, padding: "24px 28px", borderRadius: "20px 20px 0 0", color: "#fff" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>
@@ -679,8 +694,33 @@ const ReviewModal = ({ reg, onClose }) => {
   );
 };
 
+// ─── MOBILE TOP BAR ───
+const MobileHeader = ({ role, tab, onHamburger }) => {
+  const tabs = {
+    admin:     { dashboard:"Dashboard", trainees:"Residents", trainers:"Consultants", assessments:"Assessments", templates:"Templates", documents:"Documents" },
+    moderator: { dashboard:"Dashboard", pending:"Pending Accounts", users:"User Management" },
+    trainer:   { dashboard:"Dashboard", myTrainees:"My Residents", assessments:"Assessments" },
+    trainee:   { dashboard:"My Portfolio", myAssess:"My Assessments", myDocs:"My Documents" },
+  };
+  const currentLabel = tabs[role]?.[tab] || "Dashboard";
+  return (
+    <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: 56, backgroundColor: C.primary, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", zIndex: 200, direction: "rtl" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ fontSize: 13, fontWeight: 800, color: "#fff" }}>e-Portfolio</div>
+        <div style={{ width: 1, height: 16, backgroundColor: "rgba(255,255,255,0.2)" }}/>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>{currentLabel}</div>
+      </div>
+      <button onClick={onHamburger} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 8, width: 38, height: 38, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5, cursor: "pointer", padding: 8 }}>
+        <div style={{ width: 18, height: 2, backgroundColor: "#fff", borderRadius: 2 }}/>
+        <div style={{ width: 18, height: 2, backgroundColor: "#fff", borderRadius: 2 }}/>
+        <div style={{ width: 18, height: 2, backgroundColor: "#fff", borderRadius: 2 }}/>
+      </button>
+    </div>
+  );
+};
+
 // ─── SIDEBAR ───
-const Side = ({ role, tab, sTab, onOut }) => {
+const Side = ({ role, tab, sTab, onOut, isMobile, isOpen, onClose }) => {
   const tabs = {
     admin:     [["dashboard","Dashboard",I.dash],["trainees","Residents",I.users],["trainers","Consultants",I.award],["assessments","Assessments",I.clip],["templates","Templates",I.book],["documents","Documents",I.file]],
     moderator: [["dashboard","Dashboard",I.dash],["pending","Pending Accounts",I.warn],["users","User Management",I.users]],
@@ -691,41 +731,70 @@ const Side = ({ role, tab, sTab, onOut }) => {
   const labels = { admin: "Admin", moderator: "Moderator", trainer: "Consultant", trainee: "Resident" };
   const roleColors = { admin: C.accent, moderator: C.moderator, trainer: C.success, trainee: C.warning };
 
+  const handleNav = (id) => { sTab(id); if (isMobile) onClose(); };
+
   return (
-    <div style={{ width: 260, backgroundColor: C.primary, color: "#fff", display: "flex", flexDirection: "column", height: "100vh", position: "fixed", right: 0, top: 0, zIndex: 100 }}>
-      <div style={{ padding: "22px 18px 14px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-        <div style={{ fontSize: 10, fontWeight: 700, opacity: 0.4, letterSpacing: 2, marginBottom: 3 }}>e-Portfolio System</div>
-        <div style={{ fontSize: 14, fontWeight: 800, lineHeight: 1.4 }}>Electronic Portfolio System</div>
-        <div style={{ fontSize: 11, opacity: 0.45, marginTop: 2 }}>Sudan Obstetrics & Gynaecology Council</div>
-      </div>
-      <div style={{ padding: "12px 18px", borderBottom: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", gap: 10 }}>
-        <div style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: `${roleColors[role]}30`, border: `2px solid ${roleColors[role]}60`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14 }}>
-          {names[role]?.[0]}
-        </div>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 700 }}>{names[role]}</div>
-          <div style={{ fontSize: 10, opacity: 0.5 }}>
-            <span style={{ backgroundColor: `${roleColors[role]}40`, padding: "1px 7px", borderRadius: 10, fontWeight: 700 }}>{labels[role]}</span>
+    <>
+      {/* Overlay for mobile */}
+      {isMobile && isOpen && (
+        <div onClick={onClose} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 150 }}/>
+      )}
+      <div style={{
+        width: 260,
+        backgroundColor: C.primary,
+        color: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        position: "fixed",
+        right: 0,
+        top: 0,
+        zIndex: 160,
+        transition: "transform 0.3s ease",
+        transform: isMobile ? (isOpen ? "translateX(0)" : "translateX(100%)") : "translateX(0)",
+        boxShadow: isMobile && isOpen ? "-4px 0 20px rgba(0,0,0,0.3)" : "none",
+      }}>
+        <div style={{ padding: "22px 18px 14px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, opacity: 0.4, letterSpacing: 2, marginBottom: 3 }}>e-Portfolio System</div>
+              <div style={{ fontSize: 14, fontWeight: 800, lineHeight: 1.4 }}>Electronic Portfolio System</div>
+              <div style={{ fontSize: 11, opacity: 0.45, marginTop: 2 }}>Sudan Obstetrics & Gynaecology Council</div>
+            </div>
+            {isMobile && (
+              <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, color: "#fff", fontSize: 16, fontFamily: "inherit" }}>✕</button>
+            )}
           </div>
         </div>
-      </div>
-      <nav style={{ flex: 1, padding: "10px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
-        {(tabs[role] || []).map(([id, l, ic]) => (
-          <button key={id} onClick={() => sTab(id)}
-            style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 600, textAlign: "right", backgroundColor: tab === id ? "rgba(255,255,255,0.15)" : "transparent", color: tab === id ? "#fff" : "rgba(255,255,255,0.6)", transition: "all 0.15s" }}>
-            <Ic d={ic} s={18} c={tab === id ? "#fff" : "rgba(255,255,255,0.35)"}/>
-            {l}
-            {id === "pending" && <span style={{ marginRight: "auto", backgroundColor: C.warning, color: "#fff", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 800 }}>{PENDING_REGISTRATIONS.length}</span>}
+        <div style={{ padding: "12px 18px", borderBottom: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: `${roleColors[role]}30`, border: `2px solid ${roleColors[role]}60`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14 }}>
+            {names[role]?.[0]}
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700 }}>{names[role]}</div>
+            <div style={{ fontSize: 10, opacity: 0.5 }}>
+              <span style={{ backgroundColor: `${roleColors[role]}40`, padding: "1px 7px", borderRadius: 10, fontWeight: 700 }}>{labels[role]}</span>
+            </div>
+          </div>
+        </div>
+        <nav style={{ flex: 1, padding: "10px 8px", display: "flex", flexDirection: "column", gap: 2, overflowY: "auto" }}>
+          {(tabs[role] || []).map(([id, l, ic]) => (
+            <button key={id} onClick={() => handleNav(id)}
+              style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 12px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 600, textAlign: "right", backgroundColor: tab === id ? "rgba(255,255,255,0.15)" : "transparent", color: tab === id ? "#fff" : "rgba(255,255,255,0.6)", transition: "all 0.15s" }}>
+              <Ic d={ic} s={18} c={tab === id ? "#fff" : "rgba(255,255,255,0.35)"}/>
+              {l}
+              {id === "pending" && <span style={{ marginRight: "auto", backgroundColor: C.warning, color: "#fff", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 800 }}>{PENDING_REGISTRATIONS.length}</span>}
+            </button>
+          ))}
+        </nav>
+        <div style={{ padding: "10px 8px", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+          <button onClick={onOut}
+            style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 12px", borderRadius: 10, width: "100%", border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 600, textAlign: "right", backgroundColor: "transparent", color: "rgba(255,255,255,0.45)" }}>
+            <Ic d={I.out} s={18} c="rgba(255,255,255,0.35)"/>Logout
           </button>
-        ))}
-      </nav>
-      <div style={{ padding: "10px 8px", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-        <button onClick={onOut}
-          style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, width: "100%", border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: 600, textAlign: "right", backgroundColor: "transparent", color: "rgba(255,255,255,0.45)" }}>
-          <Ic d={I.out} s={18} c="rgba(255,255,255,0.35)"/>Logout
-        </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -884,17 +953,22 @@ const ModUsers = () => {
 
 // ─── MAIN APP ───
 export default function App() {
-  const [role,    sRole]    = useState(null);
-  const [tab,     sTab]     = useState("dashboard");
-  const [showReg, sShowReg] = useState(false);
-  const [showAF,  sAF]      = useState(false);
-  const [showDU,  sDU]      = useState(false);
-  const [showAU,  sAU]      = useState(null);
-  const [showTU,  sTU]      = useState(false);
-  const [selT,    sSelT]    = useState(null);
-  const [revReg,  sRevReg]  = useState(null);
-  const [srch,    sSrch]    = useState("");
-  const [yf,      sYf]      = useState("all");
+  const isMobile = useMobile();
+  const [role,     sRole]    = useState(null);
+  const [tab,      sTab]     = useState("dashboard");
+  const [sideOpen, setSideOpen] = useState(false);
+  const [showReg,  sShowReg] = useState(false);
+  const [showAF,   sAF]      = useState(false);
+  const [showDU,   sDU]      = useState(false);
+  const [showAU,   sAU]      = useState(null);
+  const [showTU,   sTU]      = useState(false);
+  const [selT,     sSelT]    = useState(null);
+  const [revReg,   sRevReg]  = useState(null);
+  const [srch,     sSrch]    = useState("");
+  const [yf,       sYf]      = useState("all");
+
+  // Close sidebar on tab change when on mobile
+  const handleTabChange = (id) => { sTab(id); if (isMobile) setSideOpen(false); };
 
   // ── REGISTRATION SCREEN ──
   if (!role && showReg) {
@@ -1218,8 +1292,24 @@ export default function App() {
 
   return (
     <div style={{ direction: "rtl", fontFamily: "'Noto Sans Arabic', 'Segoe UI', Tahoma, sans-serif", backgroundColor: C.bg, minHeight: "100vh" }}>
-      <Side role={role} tab={tab} sTab={sTab} onOut={() => { sRole(null); sTab("dashboard"); }}/>
-      <main style={{ marginRight: 260, padding: "24px 32px", minHeight: "100vh" }}>{content()}</main>
+      {/* Mobile top bar */}
+      {isMobile && <MobileHeader role={role} tab={tab} onHamburger={() => setSideOpen(true)}/>}
+
+      {/* Sidebar — drawer on mobile, fixed on desktop */}
+      <Side
+        role={role} tab={tab} sTab={handleTabChange}
+        onOut={() => { sRole(null); sTab("dashboard"); setSideOpen(false); }}
+        isMobile={isMobile} isOpen={sideOpen} onClose={() => setSideOpen(false)}
+      />
+
+      {/* Main content */}
+      <main style={{
+        marginRight: isMobile ? 0 : 260,
+        padding: isMobile ? "72px 16px 24px" : "24px 32px",
+        minHeight: "100vh",
+      }}>
+        {content()}
+      </main>
 
       {showAF  && <AssessForm onClose={() => sAF(false)} tFilter={role === "trainer" ? 1 : null}/>}
       {showDU  && <DocUpload  onClose={() => sDU(false)} tFilter={role === "trainee" ? 1 : null} uploaderRole={role}/>}
