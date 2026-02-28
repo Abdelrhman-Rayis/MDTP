@@ -287,7 +287,7 @@ const AssessForm = ({ onClose, tFilter }) => {
   return (
     <Modal title="New Assessment (DOPS)" onClose={onClose}>
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-        <FL label="Select Registrar">
+        <FL label="Select Resident">
           <Sel value={fd.trainee} onChange={v => sfd({ ...fd, trainee: v })} ph="— Select Trainee —"
             opts={avail.map(t => ({ v: t.name, l: `${t.name} — Year ${t.year} — ${t.hospital}` }))}/>
         </FL>
@@ -361,7 +361,7 @@ const DocUpload = ({ onClose, tFilter, uploaderRole }) => {
             ℹ Sensitive administrative documents (maternity leaves, investigation minutes) can only be uploaded by your assigned Consultant.
           </div>
         )}
-        <FL label="Registrar">
+        <FL label="Resident">
           <Sel value={fd.trainee} onChange={v => sfd({ ...fd, trainee: v })} ph="— Select Trainee —"
             opts={avail.map(t => ({ v: t.name, l: t.name }))}/>
         </FL>
@@ -385,7 +385,7 @@ const AddUser = ({ onClose, type }) => {
   const [fd, sfd] = useState({ name: "", email: "", hospital: "", year: "1", trainer: "" });
   const isTr = type === "trainee";
   return (
-    <Modal title={isTr ? "Add New Registrar" : "Add New Consultant"} onClose={onClose}>
+    <Modal title={isTr ? "Add New Resident" : "Add New Consultant"} onClose={onClose}>
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <FL label="Full Name"><Inp value={fd.name} onChange={v => sfd({ ...fd, name: v })} ph="Enter full name"/></FL>
         <FL label="Email"><Inp value={fd.email} onChange={v => sfd({ ...fd, email: v })} ph="example@email.com" dir="ltr"/></FL>
@@ -456,7 +456,7 @@ const Profile = ({ t, onClose }) => {
         <div style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primaryLight})`, padding: "24px 28px", borderRadius: "20px 20px 0 0", color: "#fff" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>
-              <div style={{ fontSize: 11, opacity: 0.5, marginBottom: 4 }}>Registrar Portfolio</div>
+              <div style={{ fontSize: 11, opacity: 0.5, marginBottom: 4 }}>Resident Portfolio</div>
               <h2 style={{ fontSize: 24, fontWeight: 800, margin: 0 }}>{t.name}</h2>
               <p style={{ margin: "6px 0 0", opacity: 0.75, fontSize: 13 }}>{t.hospital} — {t.trainer} — {t.uni}</p>
             </div>
@@ -596,7 +596,7 @@ const RegisterForm = ({ onBack }) => {
             </FL>
             <FL label="Role">
               <Sel value={fd.role} onChange={v => sfd({ ...fd, role: v })} ph="— Select Role —"
-                opts={[{ v: "trainee", l: "Registrar (Trainee)" },{ v: "trainer", l: "Consultant (Trainer)" }]}/>
+                opts={[{ v: "trainee", l: "Resident (Trainee)" },{ v: "trainer", l: "Consultant (Trainer)" }]}/>
             </FL>
             <FL label="Hospital">
               <Sel value={fd.hospital} onChange={v => sfd({ ...fd, hospital: v })} ph="— Select Hospital —"
@@ -682,13 +682,13 @@ const ReviewModal = ({ reg, onClose }) => {
 // ─── SIDEBAR ───
 const Side = ({ role, tab, sTab, onOut }) => {
   const tabs = {
-    admin:     [["dashboard","Dashboard",I.dash],["trainees","Registrars",I.users],["trainers","Consultants",I.award],["assessments","Assessments",I.clip],["templates","Templates",I.book],["documents","Documents",I.file]],
+    admin:     [["dashboard","Dashboard",I.dash],["trainees","Residents",I.users],["trainers","Consultants",I.award],["assessments","Assessments",I.clip],["templates","Templates",I.book],["documents","Documents",I.file]],
     moderator: [["dashboard","Dashboard",I.dash],["pending","Pending Accounts",I.warn],["users","User Management",I.users]],
-    trainer:   [["dashboard","Dashboard",I.dash],["myTrainees","My Registrars",I.users],["assessments","Assessments",I.clip]],
+    trainer:   [["dashboard","Dashboard",I.dash],["myTrainees","My Residents",I.users],["assessments","Assessments",I.clip]],
     trainee:   [["dashboard","My Portfolio",I.dash],["myAssess","My Assessments",I.clip],["myDocs","My Documents",I.file]],
   };
   const names  = { admin: "Prof. Duriya Reis", moderator: "Moderator Team", trainer: "Dr. Sara Ahmed", trainee: "Ahmed Mohammed Ali" };
-  const labels = { admin: "Admin", moderator: "Moderator", trainer: "Consultant", trainee: "Registrar" };
+  const labels = { admin: "Admin", moderator: "Moderator", trainer: "Consultant", trainee: "Resident" };
   const roleColors = { admin: C.accent, moderator: C.moderator, trainer: C.success, trainee: C.warning };
 
   return (
@@ -752,7 +752,7 @@ const Login = ({ onIn, onRegister }) => {
               ["admin",     "Admin",      I.gear,   "Prof. Duriya",  C.accent],
               ["moderator", "Moderator",  I.shield, "Mod. Team",     C.moderator],
               ["trainer",   "Consultant", I.award,  "Dr. Sara",      C.success],
-              ["trainee",   "Registrar",  I.users,  "Ahmed M.",      C.warning],
+              ["trainee",   "Resident",  I.users,  "Ahmed M.",      C.warning],
             ].map(([r,l,ic,n,col]) => (
               <button key={r} onClick={() => ss(r)}
                 style={{ padding: "11px 10px", borderRadius: 12, border: s === r ? `2px solid ${col}` : `1px solid ${C.border}`, backgroundColor: s === r ? `${col}15` : "#fff", cursor: "pointer", fontFamily: "inherit", display: "flex", flexDirection: "column", alignItems: "center", gap: 5, transition: "all 0.15s" }}>
@@ -856,7 +856,7 @@ const ModPending = ({ onReview }) => (
 
 const ModUsers = () => {
   const allUsers = [
-    ...TRAINEES.map(t => ({ ...t, userRole: "Registrar", email: `${t.uni.toLowerCase()}@council.sd` })),
+    ...TRAINEES.map(t => ({ ...t, userRole: "Resident", email: `${t.uni.toLowerCase()}@council.sd` })),
     ...TRAINERS.map(t => ({ ...t, userRole: "Consultant", email: `${t.name.toLowerCase().replace(/[. ]/g,"")  }@council.sd`, status: t.status })),
   ];
   return (
@@ -924,7 +924,7 @@ export default function App() {
               <p style={{ color: C.muted, margin: "4px 0 0", fontSize: 14 }}>Main Admin Dashboard</p>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14 }}>
-              <Stat icon={I.users} label="Active Registrars" value={TRAINEES.filter(t => t.status === "active").length} sub={`of ${TRAINEES.length}`} color={C.accent}/>
+              <Stat icon={I.users} label="Active Residents" value={TRAINEES.filter(t => t.status === "active").length} sub={`of ${TRAINEES.length}`} color={C.accent}/>
               <Stat icon={I.award} label="Consultants"       value={TRAINERS.length}  sub="Pilot phase" color={C.success}/>
               <Stat icon={I.clip}  label="Assessments"       value={ASSESS.length}    color={C.warning}/>
               <Stat icon={I.file}  label="Documents"         value={DOCS.length}      color={C.primaryLight}/>
@@ -935,7 +935,7 @@ export default function App() {
                 <Btn v="ghost" sz="sm" onClick={() => sTab("assessments")}>View All →</Btn>
               </div>
               <Tbl cols={[
-                { header: "Registrar", render: r => <b>{r.trainee}</b> },
+                { header: "Resident", render: r => <b>{r.trainee}</b> },
                 { header: "Procedure", key: "proc" },
                 { header: "Axis",      render: r => <ABdg a={r.axis}/> },
                 { header: "Date",      key: "date" },
@@ -971,12 +971,12 @@ export default function App() {
               <p style={{ color: C.muted, margin: "4px 0 0", fontSize: 14 }}>Consultant Dashboard</p>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14 }}>
-              <Stat icon={I.users} label="My Registrars" value={my.length} sub={`${my.filter(t => t.status === "active").length} active`} color={C.accent}/>
+              <Stat icon={I.users} label="My Residents" value={my.length} sub={`${my.filter(t => t.status === "active").length} active`} color={C.accent}/>
               <Stat icon={I.clip}  label="My Assessments" value={ASSESS.filter(a => a.trainer === "Dr. Sara Ahmed").length} color={C.success}/>
             </div>
             <Crd>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                <h2 style={{ fontSize: 16, fontWeight: 800, margin: 0 }}>My Registrars</h2>
+                <h2 style={{ fontSize: 16, fontWeight: 800, margin: 0 }}>My Residents</h2>
                 <Btn v="success" sz="sm" icon={I.plus} onClick={() => sAF(true)}>New Assessment</Btn>
               </div>
               {my.map(t => (
@@ -1047,8 +1047,8 @@ export default function App() {
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text, margin: 0 }}>Registrars ({TRAINEES.length})</h1>
-            <Btn icon={I.plus} onClick={() => sAU("trainee")}>Add Registrar</Btn>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text, margin: 0 }}>Residents ({TRAINEES.length})</h1>
+            <Btn icon={I.plus} onClick={() => sAU("trainee")}>Add Resident</Btn>
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <Search value={srch} onChange={sSrch} ph="Search..."/>
@@ -1077,7 +1077,7 @@ export default function App() {
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text, margin: 0 }}>My Registrars ({my.length})</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text, margin: 0 }}>My Residents ({my.length})</h1>
             <Btn icon={I.plus} v="success" onClick={() => sAF(true)}>New Assessment</Btn>
           </div>
           <Tbl cols={[
@@ -1103,7 +1103,7 @@ export default function App() {
           { header: "Name",        render: r => <b>{r.name}</b> },
           { header: "Specialty",   key: "spec" },
           { header: "Hospital",    key: "hospital" },
-          { header: "Registrars",  render: r => <Bdg>{TRAINEES.filter(t => t.tid === r.id).length}</Bdg> },
+          { header: "Residents",  render: r => <Bdg>{TRAINEES.filter(t => t.tid === r.id).length}</Bdg> },
           { header: "Status",      render: r => <SBdg s={r.status}/> },
         ]} data={TRAINERS}/>
       </div>
@@ -1119,7 +1119,7 @@ export default function App() {
             <Btn icon={I.plus} v="success" onClick={() => sAF(true)}>New Assessment</Btn>
           </div>
           <Tbl cols={[
-            { header: "Registrar",  render: r => <b>{r.trainee}</b> },
+            { header: "Resident",  render: r => <b>{r.trainee}</b> },
             { header: "Consultant", key: "trainer" },
             { header: "Procedure",  key: "proc" },
             { header: "Axis",       render: r => <ABdg a={r.axis}/> },
@@ -1198,7 +1198,7 @@ export default function App() {
             </div>
           )}
           <Tbl cols={[
-            ...(tab !== "myDocs" ? [{ header: "Registrar", render: r => <b>{r.trainee}</b> }] : []),
+            ...(tab !== "myDocs" ? [{ header: "Resident", render: r => <b>{r.trainee}</b> }] : []),
             { header: "Type",       key: "type" },
             { header: "Format",     render: r => <Bdg c={r.ft === "PDF" ? C.danger : C.accent} b={r.ft === "PDF" ? C.dangerSoft : C.accentSoft}>{r.ft}</Bdg> },
             { header: "Date",       key: "date" },

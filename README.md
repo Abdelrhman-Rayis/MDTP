@@ -38,7 +38,7 @@ This platform replaces the previous paper-based and web-based assessment system,
 | **Admin** | المقرر | Full system oversight; manages all users, templates, and data |
 | **Moderator** | المشرف | Reviews new registrations, verifies identity documents, activates/rejects accounts |
 | **Consultant** (Trainer) | المدرب / الاستشاري | Conducts DOPS assessments; uploads sensitive administrative documents on behalf of registrars |
-| **Registrar** (Trainee) | النائب / المتدرب | Views personal portfolio; uploads non-sensitive documents (certificates, presentations) |
+| **Resident** (Trainee) | النائب / المتدرب | Views personal portfolio; uploads non-sensitive documents (certificates, presentations) |
 
 ---
 
@@ -69,7 +69,7 @@ This platform replaces the previous paper-based and web-based assessment system,
   - Investigation Committee Minutes
   - Official Administrative Leave
 
-### Registrar (Trainee) Features
+### Resident (Trainee) Features
 - Personal training portfolio with **4-year progression tracker**
 - View all received assessments with trainer notes
 - Upload non-sensitive documents: Scientific Presentations, Course Certificates, Simulation Certificates
@@ -84,7 +84,7 @@ This platform replaces the previous paper-based and web-based assessment system,
 
 ### Document Management
 - Supports **PDF and Image** uploads
-- Audit trail: each document shows who uploaded it (Consultant or Registrar)
+- Audit trail: each document shows who uploaded it (Consultant or Resident)
 - All documents flagged as **Verified** once reviewed
 
 ---
@@ -134,7 +134,7 @@ On the login screen, select any role to preview its interface without a password
 | Admin | Prof. Duriya Reis |
 | Moderator | Moderator Team |
 | Consultant | Dr. Sara Ahmed |
-| Registrar | Ahmed Mohammed Ali |
+| Resident | Ahmed Mohammed Ali |
 
 ---
 
@@ -170,7 +170,7 @@ MDTP/
 
 1. **Platform naming**: Use "مجلس النساء والتوليد" exclusively; the word "جراحة" (surgery) must not appear anywhere
 2. **Interface language**: English as primary language (to match certificates and passports); Arabic names can be added later for admin use
-3. **Document permissions**: Only the **Consultant** (not the Registrar) may upload sensitive administrative documents (sick leaves >2 weeks, investigation boards)
+3. **Document permissions**: Only the **Consultant** (not the Resident) may upload sensitive administrative documents (sick leaves >2 weeks, investigation boards)
 4. **Registration security**: No open account creation; invitation codes issued per user; identity proof required; Moderator team activates accounts
 5. **System architecture**: Web-first; plan for mobile app and AI layer in future phases
 6. **Scale**: Support ~1,000 registrars; stress-tested for 1,200 concurrent users
@@ -180,7 +180,7 @@ MDTP/
 ## Roadmap
 
 ### Phase 1 — Current (Prototype)
-- [x] 4 user roles: Admin, Moderator, Consultant, Registrar
+- [x] 4 user roles: Admin, Moderator, Consultant, Resident
 - [x] Invitation-code registration with ID verification
 - [x] DOPS assessment forms with checklist + qualitative rating
 - [x] Document upload with role-based permission restrictions
