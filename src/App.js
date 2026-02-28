@@ -743,7 +743,7 @@ const Side = ({ role, tab, sTab, onOut, isMobile, isOpen, onClose }) => {
     <>
       {/* Overlay for mobile */}
       {isMobile && isOpen && (
-        <div onClick={onClose} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 150 }}/>
+        <div onClick={onClose} style={{ position: "fixed", top: 56, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 150 }}/>
       )}
       <div style={{
         width: 260,
@@ -751,10 +751,10 @@ const Side = ({ role, tab, sTab, onOut, isMobile, isOpen, onClose }) => {
         color: "#fff",
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
+        height: isMobile ? "calc(100vh - 56px)" : "100vh",
         position: "fixed",
         right: 0,
-        top: 0,
+        top: isMobile ? 56 : 0,
         zIndex: 160,
         transition: "transform 0.3s ease",
         transform: isMobile ? (isOpen ? "translateX(0)" : "translateX(100%)") : "translateX(0)",
@@ -767,9 +767,6 @@ const Side = ({ role, tab, sTab, onOut, isMobile, isOpen, onClose }) => {
               <div style={{ fontSize: 14, fontWeight: 800, lineHeight: 1.4 }}>Electronic Portfolio System</div>
               <div style={{ fontSize: 11, opacity: 0.45, marginTop: 2 }}>Sudan Obstetrics & Gynaecology Council</div>
             </div>
-            {isMobile && (
-              <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, color: "#fff", fontSize: 16, fontFamily: "inherit" }}>✕</button>
-            )}
           </div>
         </div>
         <div style={{ padding: "12px 18px", borderBottom: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", gap: 10 }}>
