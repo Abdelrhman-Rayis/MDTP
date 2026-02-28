@@ -695,7 +695,7 @@ const ReviewModal = ({ reg, onClose }) => {
 };
 
 // ─── MOBILE TOP BAR ───
-const MobileHeader = ({ role, tab, onHamburger }) => {
+const MobileHeader = ({ role, tab, onHamburger, sideOpen }) => {
   const tabs = {
     admin:     { dashboard:"Dashboard", trainees:"Residents", trainers:"Consultants", assessments:"Assessments", templates:"Templates", documents:"Documents" },
     moderator: { dashboard:"Dashboard", pending:"Pending Accounts", users:"User Management" },
@@ -710,10 +710,16 @@ const MobileHeader = ({ role, tab, onHamburger }) => {
         <div style={{ width: 1, height: 16, backgroundColor: "rgba(255,255,255,0.2)" }}/>
         <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>{currentLabel}</div>
       </div>
-      <button onClick={onHamburger} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 8, width: 38, height: 38, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5, cursor: "pointer", padding: 8 }}>
-        <div style={{ width: 18, height: 2, backgroundColor: "#fff", borderRadius: 2 }}/>
-        <div style={{ width: 18, height: 2, backgroundColor: "#fff", borderRadius: 2 }}/>
-        <div style={{ width: 18, height: 2, backgroundColor: "#fff", borderRadius: 2 }}/>
+      <button onClick={onHamburger} style={{ background: sideOpen ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.1)", border: "none", borderRadius: 8, width: 38, height: 38, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: sideOpen ? 0 : 5, cursor: "pointer", padding: 8, transition: "all 0.2s" }}>
+        {sideOpen ? (
+          <div style={{ fontSize: 20, color: "#fff", fontWeight: 300, lineHeight: 1, fontFamily: "inherit" }}>✕</div>
+        ) : (
+          <>
+            <div style={{ width: 18, height: 2, backgroundColor: "#fff", borderRadius: 2 }}/>
+            <div style={{ width: 18, height: 2, backgroundColor: "#fff", borderRadius: 2 }}/>
+            <div style={{ width: 18, height: 2, backgroundColor: "#fff", borderRadius: 2 }}/>
+          </>
+        )}
       </button>
     </div>
   );
@@ -1293,7 +1299,7 @@ export default function App() {
   return (
     <div style={{ direction: "rtl", fontFamily: "'Noto Sans Arabic', 'Segoe UI', Tahoma, sans-serif", backgroundColor: C.bg, minHeight: "100vh" }}>
       {/* Mobile top bar */}
-      {isMobile && <MobileHeader role={role} tab={tab} onHamburger={() => setSideOpen(true)}/>}
+      {isMobile && <MobileHeader role={role} tab={tab} onHamburger={() => setSideOpen(o => !o)} sideOpen={sideOpen}/>}
 
       {/* Sidebar — drawer on mobile, fixed on desktop */}
       <Side
